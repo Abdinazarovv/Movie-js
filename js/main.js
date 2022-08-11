@@ -1,4 +1,3 @@
-// Select all elements from HTML
 let elMovieCardTemplate = document.querySelector("#movie_card").content;
 let elMoviesWrapper = document.querySelector(".movies_wrapper");
 let elForm = document.querySelector(".form");
@@ -7,12 +6,17 @@ let elMovieYear = document.querySelector(".movie__year");
 let elSelectCategories = document.querySelector(".movie__categories");
 let elSelectSort = document.querySelector(".movie__select");
 let elResult = document.querySelector(".result");
+let elModalTitle = document.querySelector(".m_title");
+let elModalBody = document.querySelector(".m_body");
+let elBookmarkedList = document.querySelector(".bookmarked");
 
 
-//How many movies do you need?
-let newMovies = movies.slice(0, 151)
+// 
+let newMovies = movies.slice(0, 20)
 
-// Normolize
+let bookmarkedMovies = [];
+
+
 let normolizedArray = newMovies.map(function (item) {
     return {
         id: item.imdb_id,
@@ -26,7 +30,7 @@ let normolizedArray = newMovies.map(function (item) {
     }
 });
 
-// Categories
+
 function generateCategories(array) {
     let newCategoriesArray = []
     
@@ -44,7 +48,7 @@ function generateCategories(array) {
 
 let categoryList = generateCategories(normolizedArray);
 
-// Render Movies
+
 function renderCategories(array, wrapper) {
     let newFragment = document.createDocumentFragment()
     for (const item of array) {
@@ -77,6 +81,7 @@ function renderMovies(array) {
         movieCard.querySelector(".movie__rating").textContent = item.categories;
         movieCard.querySelector(".movie__link").href = item.videoUrl;
         movieCard.querySelector(".moreinfo_btn").dataset.movieId = item.id;
+        movieCard.querySelector(".btn_bookmark").dataset.bookmarkId = item.id;
         movieCard.querySelector(".movie__link").setAttribute("target", "blank");
         
         elFragment.appendChild(movieCard);     
@@ -96,65 +101,111 @@ elForm.addEventListener("submit", (evt) => {
     let selectedCategory = elSelectCategories.value.trim();
     let selectedSort = elSelectSort.value.trim();
     
-    console.log(selectedSort);    
-    
-    let filteredMovies = normolizedArray.filter(function (item) {
-        // 1-usul
-
-        // let select
-        
-        // if (selectedCategory == "all") {
-        //     select = true
-        // }else {
-        //     select = item.categories.includes(selectedCategory)
-        // }
-        
-        // 2-usul
-
+    let filteredMovies = normolizedArray.filter(function (item) {      
         let select = selectedCategory == "all" ? true : item.categories.includes(selectedCategory)
         
         let validation = item.rating >= inputRating && item.movieYear >= inputYear && select
         return validation
     });
     
-    filteredMovies.sort((a, b) => {
-        if (selectedSort == "rating-high-low") {
-            return b.rating - a.rating
-        } 
-        
-        if (selectedSort == "rating-low-high") {
-            return a.rating - b.rating
-        } 
-        
-        if (selectedSort == "year-high-low") {
-            return b.movieYear - a.movieYear
-        } 
-        
-        if (selectedSort == "year-low-high") {
-            return a.movieYear - b.movieYear
-        } 
-    })
-    
-    renderMovies(filteredMovies);
+    if (selectedCategory == "none") {
+        renderMovies(normolizedArray);       
+    } else {
+        filteredMovies.sort((a, b) => {
+            if (selectedSort == "rating-high-low") {
+                return b.rating - a.rating
+            } 
+            
+            if (selectedSort == "rating-low-high") {
+                return a.rating - b.rating
+            } 
+            
+            if (selectedSort == "year-high-low") {
+                return b.movieYear - a.movieYear
+            } 
+            
+            if (selectedSort == "a-z") {
+                if (a.title > b.title) {
+                    return 1
+                } else if (a.title < b.title) {
+                    return -1
+                }else {
+                    return 0
+                }
+            } 
+            
+            if (selectedSort == "z-a") {
+                if (a.title > b.title) {
+                    return -1
+                } else if (a.title < b.title) {
+                    return 1
+                }else {
+                    return 0
+                }
+            } 
+            
+            
+        })
+        renderMovies(filteredMovies);       
+    }
 });
 
-let result = normolizedArray.sort(function (b, a) {
-    return a.rating - b.rating
+
+elMoviesWrapper.addEventListener("click", function(ok) {
+    let currentId = ok.target.dataset.movieId
+    if (currentId) {
+        let foundMovie = normolizedArray.find(function(item) {
+            return item.id == currentId
+        })
+        elModalTitle.textContent = foundMovie.title;
+        elModalBody.textContent = foundMovie.summary;
+    }
 })
 
-console.log(result);
-
-
-elMoviesWrapper.addEventListener("click", function(evt) {
-    let clickedMovieId = evt.target.dataset.movieId
-    renderModal(normolizedArray, clickedMovieId);
+elMoviesWrapper.addEventListener("click", function(ok) {
+    let currentId = ok.target.dataset.bookmarkId
+    if (currentId) {
+        let foundMovie = normolizedArray.find(function(item) {
+            return item.id == currentId
+        })
+        
+        
+        if (bookmarkedMovies.length == 0) {
+            bookmarkedMovies.unshift(foundMovie); 
+        }else {
+            let check
+            for (const item of bookmarkedMovies) {
+                if (item.id == currentId) {
+                    check = true
+                }
+            }
+            
+            if (!check) {
+                bookmarkedMovies.unshift(foundMovie); 
+            }
+        }
+        console.log(bookmarkedMovies);
+        console.log("______________________");
+        renderBookmarks(bookmarkedMovies, elBookmarkedList)
+    }
 })
 
-function renderModal(array, id) {
-    let foundMovie = array.find(function(item) {
-        return item.id == id
-    });
+
+function renderBookmarks(array, wrapper) {
+    wrapper.innerHTML = null
+
+    let fragment = document.createDocumentFragment()
     
-    staticBackdropLabel.textContent = foundMovie.title;
-    modalBody.textContent = foundMovie.summary
+    for (const item of array) {
+        let newLi = document.createElement("li");
+        newLi.innerHTML = `
+        <li class="list-group-item p-3">
+        <h4 class="d-inline-block text-truncate h5" style="max-width: 100%;" >${item.title}</h4>
+        <button class="btn btn-danger btn-sm d-block" type="button">Remove</button>
+        </li>   
+        `
+        fragment.append(newLi);
+    }
+
+    wrapper.append(fragment)
 }

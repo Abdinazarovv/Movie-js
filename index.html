@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- CSS only -->
     <link rel="stylesheet" href="./bootstrap/css/bootstrap.css">
-    <link rel="stylesheet" href="./css/styles.css">
-    <title>Movie</title>
+    <link rel="stylesheet" href="./css/main.css">
+    <title>Bootstrap 5</title>
 </head>
 <body>
+    
     
     <main>
         <section>
@@ -20,7 +21,7 @@
                     <div class="col-4 position-relative">
                         <div class="position-sticky w-100" style="top: 30px;">
                             <form class="mb-5 form">
-                                <input type="text" class="form-control form-control-sm mb-2" aria-describedby="Search for movies" placeholder="Search for movies">
+                                <input type="text" class="form-control form-control-sm mb-2 movie__title" aria-describedby="Search for movies" placeholder="Search for movies">
                                 
                                 <input type="number" class="form-control form-control-sm mb-2 movie__rating" placeholder="IMDB rating" min="0" max="10"  step="0.1">
                                 
@@ -31,10 +32,13 @@
                                 </select>
                                 
                                 <select class="form-select form-select-sm mb-2 movie__select" aria-label="Default select example">
-                                    <option selected value="rating-high-low">Rating(First high)</option>
+                                    <option selected value="none">none</option>
+                                    <option value="rating-high-low">Rating(First high)</option>
                                     <option value="rating-low-high">Rating(First low)</option>
                                     <option value="year-high-low">year(First high)</option>
                                     <option value="year-low-high">Year(First low)</option>
+                                    <option value="a-z">A-Z</option>
+                                    <option value="z-a">Z-A</option>
                                 </select>
                                 
                                 <button type="submit" class="btn btn-primary btn-sm w-100">Submit</button>
@@ -42,23 +46,15 @@
                             
                             <h3 class="text-center">Bookmarked movies</h3>
                             
-                            <ul class="list-group">
+                            <ul class="list-group bookmarked">
                                 <li class="list-group-item p-3">
-                                    <h4 class="d-inline-block text-truncate h5" style="max-width: 100%;" >Avenger: Infinity War</h4>
+                                    <h4 class="d-inline-block text-truncate h5" style="max-width: 100%;" >Pokemon</h4>
                                     <button class="btn btn-danger btn-sm d-block" type="button">Remove</button>
-                                </li>
-                                <li class="list-group-item p-3">
-                                    <h4 class="d-inline-block text-truncate h5" style="max-width: 100%;">The Avengers</h4>
-                                    <button class="btn btn-danger btn-sm d-block" type="button">Remove</button>
-                                </li>
-                                <li class="list-group-item p-3">
-                                    <h4 class="d-inline-block text-truncate h5" style="max-width: 100%;">12 Years a Slave</h4>
-                                    <button class="btn btn-danger btn-sm d-block" type="button">Remove</button>
-                                </li>
-                                
+                                </li>                               
                             </ul>
                         </div>
                     </div>
+                    
                     
                     <div class="col-8">
                         <h3 class="fs-5">Search result: <span class="result">2</span></h3>
@@ -72,6 +68,7 @@
                             
                             
                         </div>
+                        
                         
                         <ul class="pagination justify-content-center" >
                             <li class="page-item">
@@ -98,15 +95,15 @@
         </section>
     </main>
     
+    <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <h5 class="modal-title m_title" id="staticBackdropLabel">Modal title</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body" id="modalBody">
-                    ...
+                <div class="modal-body m_body" id="modalBody">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -116,19 +113,20 @@
         </div>
     </div>
     
+    
     <template id="movie_card">
         <div class="col mb-4">
             <div class="card h-100">
-                <img  src="./img/netlifix.jpg" class="card-img-top" style="max-height: 200px; object-fit: cover; object-position: center;" alt="...">
+                <img  src="./images/img1.jpg" class="card-img-top" style="max-height: 200px; object-fit: cover; object-position: center;" alt="...">
                 <div class="card-body">
-                    <h4 class="card-title text-truncate card__heading" style="max-width: 100%;">Card title Lorem ipsum dolor sit amet.</h4>
+                    <h4 class="card-title text-truncate card__heading" style="max-width: 100%;">Card title sfjksjadf dsfhxgdf dfh gfhgfh fjf jgfjfgj gdsf sdf</h4>
                     
                     <div class="fs-5 fw-bold">
-                        <img src="./img/plus.svg" alt="plus">
+                        <img src="./images/plus.svg" alt="">
                         <span class="movie__year">2018</span>
                     </div>
                     <div class="fs-5 fw-bold">
-                        <img src="./img/plus.svg" alt="">
+                        <img src="./images/plus.svg" alt="">
                         <span class="movie__rating">8.7</span>
                     </div>
                     
@@ -139,12 +137,13 @@
                             More info
                         </button>
                         
-                        <button class="btn btn-outline-success" type="button">Bookmark</button>
+                        <button class="btn btn-outline-success btn_bookmark" type="button">Bookmark</button>
                     </div>
                 </div>
             </div>
         </div>
     </template>
+    
     
     <script src="./bootstrap/js/bootstrap.js"></script>
     <script src="./js/movies.js"></script>
