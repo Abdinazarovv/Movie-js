@@ -12,7 +12,7 @@ let elBookmarkedList = document.querySelector(".bookmarked");
 
 
 // 
-let newMovies = movies.slice(0, 20)
+let newMovies = movies.slice(0, 151)
 
 let bookmarkedMovies = [];
 
